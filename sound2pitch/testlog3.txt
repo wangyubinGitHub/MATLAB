@@ -33837,3 +33837,57 @@ xxx=0
 xxx=0
 xxx=0
 xxx=0
+maxnCandidates=15
+dt=0.01
+duration=10
+brent_depth=3
+interpolation_depth=0.5
+nsamp_period=588
+halfnsamp_period=295
+ceiling=500
+dt_window=0.04
+nsamp_window=1762
+halfnsamp_window=881
+minimumLag=88
+maximumLag=589
+numberOfFrames=997
+t1=0.02
+gloable=0.073643
+brent_ixmax=881
+printf window and windowR
+startSample=295endSample=1470localMean=0.0090465+6.6569e-10i
+startSample=2endSample=1763localMean=0.0090465+6.6569e-10i
+startSample=587endSample=1176
+localPeak=0.0051729intensity=0.070243
+
+d2r =
+
+   0.0012 + 0.0000i
+
+frequencyOfMaximum=350.7997-0.001456428istrengthOfMaximum=0.55527+1.6812e-06irx [126]0.55529+1.1788e-06i
+
+d2r =
+
+   0.0011 - 0.0000i
+
+frequencyOfMaximum=169.502-0.0007587757istrengthOfMaximum=0.27204+1.6211e-07irx [260]0.27199-7.0504e-07i
+
+d2r =
+
+   0.0022 + 0.0000i
+
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('NUM_interpolate_sinc', '/Users/wangyubin/Documents/MATLAB/sound2pitch/NUM_interpolate_sinc.m', 58)" style="font-weight:bold">NUM_interpolate_sinc</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/NUM_interpolate_sinc.m',58,0)">line 58</a>)
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sound_to_pitch', '/Users/wangyubin/Documents/MATLAB/sound2pitch/sound_to_pitch.m', 376)" style="font-weight:bold">sound_to_pitch</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/sound_to_pitch.m',376,0)">line 376</a>)
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('main', '/Users/wangyubin/Documents/MATLAB/sound2pitch/main.m', 28)" style="font-weight:bold">main</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/main.m',28,0)">line 28</a>)] 
+[警告: 冒号操作数必须为实数标量。] 
+{下标索引必须为正整数类型或逻辑类型。
+
+出错 <a href="matlab:matlab.internal.language.introspective.errorDocCallback('NUM_interpolate_sinc', '/Users/wangyubin/Documents/MATLAB/sound2pitch/NUM_interpolate_sinc.m', 61)" style="font-weight:bold">NUM_interpolate_sinc</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/NUM_interpolate_sinc.m',61,0)">line 61</a>)
+		mm = mm + y(iix) * d;
+
+出错 <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sound_to_pitch', '/Users/wangyubin/Documents/MATLAB/sound2pitch/sound_to_pitch.m', 376)" style="font-weight:bold">sound_to_pitch</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/sound_to_pitch.m',376,0)">line 376</a>)
+                strengthOfMaximum = NUM_interpolate_sinc(y,brent_ixmax - offset,1 / dx / frequencyOfMaximum - offset,30);
+
+出错 <a href="matlab:matlab.internal.language.introspective.errorDocCallback('main', '/Users/wangyubin/Documents/MATLAB/sound2pitch/main.m', 28)" style="font-weight:bold">main</a> (<a href="matlab: opentoline('/Users/wangyubin/Documents/MATLAB/sound2pitch/main.m',28,0)">line 28</a>)
+    sound_to_pitch(y1,timeStep,minpitch,maxpitch);
+} 
