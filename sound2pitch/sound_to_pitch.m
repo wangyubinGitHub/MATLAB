@@ -1,4 +1,4 @@
-function [pitch] = sound_to_pitch(arr,timeStep,minimumPitch,maximumPitch)
+function [pitch] = sound_to_pitch(arr,timeStep,minimumPitch,maximumPitch,ccc,ttt,datafile)
 %UNTITLED 此处显示有关此函数的摘要
 %声音转pitch
 %arr：音频数据，44100，单声道，16bit
@@ -6,21 +6,20 @@ function [pitch] = sound_to_pitch(arr,timeStep,minimumPitch,maximumPitch)
 %minimumPitch：最小pitch
 %maximumPitch：最大pitch，不会超过 44100/2
 
-debuglog=1; %是否打log到文件
-debugplot = 1;%是否画图
+debuglog=0; %是否打log到文件
+debugplot = 0;%是否画图
 
 %Step.1
-af = fft(arr);%fft
-l=length(af);cd 
-start1 = floor(l *0.10);
-saf=fftshift(af);%翻转，使0hz为中心，两端是高频
-  
-osaf=zeros(1,length(saf));
-osaf(start1+1:l-start1)=saf(start1+1:l-start1);%只取0-95%部分，其余部分清零
-  
-arr1=ifft(ifftshift(osaf));%逆变换
-arr = arr1;
-
+% af = fft(arr);%fft
+% l=length(af);
+% start1 = floor(l *0.10);
+% saf=fftshift(af);%翻转，使0hz为中心，两端是高频
+%   
+% osaf=zeros(1,length(saf));
+% osaf(start1+1:l-start1)=saf(start1+1:l-start1);%只取0-95%部分，其余部分清零
+%   
+% arr1=ifft(ifftshift(osaf));%逆变换
+% arr = arr1;
 %以上放低通滤波器,过滤掉 Nyquistfrequency 的 95%-100%的点
 %Step.1 end
 
@@ -40,12 +39,16 @@ octaveCost = 0.01;
 octaveJumpCost = 0.35;
 voicedUnvoicedCost = 0.14;
             
+
+nsamp_window1 = (2048/2 + 1)*2;
+dt_window1 = nsamp_window1 * dx;
+minimumPitch = periodsPerWindow / dt_window1 ;
+
 nsamp_period = floor (1.0 / dx / minimumPitch);%最大周期采样点数
 halfnsamp_period = nsamp_period / 2 + 1;        %用于计算两个方向上的平均值和局部峰值
 if(maximumPitch > 0.5 / dx)
     maximumPitch = 0.5 / dx;     %最大pitch不能超过采样率的一半
 end
-maximumPitch = 500.0;
 
 maxnCandidates = floor (maximumPitch / minimumPitch);    %最大候选数量,
 %   调试
@@ -65,6 +68,7 @@ minimumLag = floor (1.0 / dx / maximumPitch);    %最小时间
 if (minimumLag < 2) 
     minimumLag = 2; %maxmumPitch最大值不会超过采样率的一半，所以为2
 end         
+minimumLag
 maximumLag = floor (nsamp_window / periodsPerWindow) + 2;   %最大时间延时
 if (maximumLag > nsamp_window) 
     maximumLag = nsamp_window;  %最大时间延时不会大于窗的采样点数，
@@ -215,8 +219,11 @@ for i=1:numberOfFrames
     %计算局部平均值，是按照一个周期采样点数nsamp_period计算的
     localMean = 0.0;
     localPeak = 0.0;
-    x = firstTime + (i - 1) * timeStep; 
-    leftSample = floor(((x - x1) / dx + 1.0));
+%     x = firstTime + (i - 1) * timeStep; 
+    x = (i+1) * timeStep; 
+%     leftSample = floor(((x - x1) / dx + 1.0));
+    leftSample = floor(((x - x1) / dx + 1.0))-1;
+
     rightSample = leftSample +1;
     startSample = rightSample - nsamp_period;
 	endSample = leftSample + nsamp_period;
@@ -237,11 +244,11 @@ for i=1:numberOfFrames
     frame=arr(startSample:endSample);
     
     if debuglog ~= 0
-    %     disp('printf frame');
-    %     for xx=1:nsamp_window
-    %         str=['frame[' num2str(xx) ']=' num2str(frame(xx))];
-    %         disp(str);
-    %     end
+%          disp('printf frame');
+%          for xx=1:nsamp_window
+%              str=['frame[' num2str(xx) ']=' num2str(frame(xx))];
+%              disp(str);
+%          end
     end
     
     for j=1:nsamp_window
@@ -290,10 +297,10 @@ for i=1:numberOfFrames
         end
     end
     
-    if(localPeak > globalPeak)
+    if(localPeak > 1.0)
         intensity(i) = 1.0;
     else
-        intensity(i) = localPeak/globalPeak;
+        intensity(i) = localPeak/1.0;
     end
     
     if debuglog ~= 0
@@ -318,10 +325,10 @@ for i=1:numberOfFrames
     
     if debuglog ~=0 
         %打印rx
-%         for j=1:brent_ixmax
-%                  str=['rx(' num2str(j) ']=' num2str(rx(j))];
-%                  disp(str);
-%         end
+%          for j=1:brent_ixmax
+%                   str=['rx(' num2str(j) ']=' num2str(rx(j))];
+%                   disp(str);
+%          end
     end
      
     %Candidate计算
@@ -350,7 +357,7 @@ for i=1:numberOfFrames
 %          str=['xx=' num2str(i*timeStep)];
 %          disp(str);
     end
-    for j=2:limit-1   
+    for j=minimumLag:limit-1   
             if( rx(j)>rx(j-1)&&rx(j)>rx(j+1)) %% maximum?
                 %11Find the strongest maxima of the correlation of this frame, and register them as candidates.
                 
@@ -361,7 +368,6 @@ for i=1:numberOfFrames
                 place = 0;
                 dr = 0.5 * (rx(j+1) - rx(j-1));
                 d2r = 2.0 * rx(j) - rx(j-1) - rx(j+1);
-                d2r
                 frequencyOfMaximum = 1.0 / dx / (j + dr / d2r);
                 
                 offset = -brent_ixmax - 1;
@@ -440,18 +446,40 @@ for i=1:numberOfFrames
                 %11 End
             end
             
+%             %这里调整place存放顺序，把强度最大的，放前面
+%             best = 0.0;
+%             ad = 2;
+%             for ii=2 : nCandidate(i)
+%                 if (data((ii-1)*2+Ostrength,i)>best)
+%                     best = data((ii-1)*2+Ostrength,i);
+%                     ad = ii;
+%                 end
+%             end
+%             %交换
+%             f = data((ad-1)*2+Ofreq,i);
+%             l = data((ad-1)*2+Ostrength,i);
+%             data((ad-1)*2+Ofreq,i)      = data(2+Ofreq,i);
+%             data((ad-1)*2+Ostrength,i)  = data(2+Ostrength,i);
+%             data(2+Ofreq,i) = f;
+%             data(2+Ostrength,i) = l;
+             
     end %forj=2：limit-1
 end
 
+% for i=1:length(data(2+Ofreq,:))
+%     fprintf(datafile, '%f\t%f\n',((ccc-1)*ttt/44100+i*timeStep),data(2+Ofreq,i));
+% end
+% return;
+
 if debuglog ~=0
-     for xx=1:numberOfFrames  
-         str=['xx=' num2str(xx*timeStep)];
-         disp(str);
-         for xxx=1:getMaxnCandidates(nCandidate)
-             str=['xxx=' num2str(data((xxx-1)*2+Ofreq,xx))];
-             disp(str);
-         end
-     end
+%      for xx=1:numberOfFrames  
+%          str=['xx=' num2str(xx*timeStep)];
+%          disp(str);
+%          for xxx=1:getMaxnCandidates(nCandidate)
+%              str=['xxx=' num2str(data((xxx-1)*2+Ofreq,xx))];
+%              disp(str);
+%          end
+%      end
      diary off;
 end
 
@@ -563,10 +591,8 @@ if debugplot ~= 0
     plot(data(Ofreq,:),'b*');
 end
 
-
 for i=1:length(data(Ofreq,:))
-    ti = firstTime + (i - 1) * timeStep
-    freq=data(Ofreq,i)
+    fprintf(datafile, '%f\t%f\n',((ccc-1)*ttt/44100+i*timeStep),data(Ofreq,i));
 end
 
 end

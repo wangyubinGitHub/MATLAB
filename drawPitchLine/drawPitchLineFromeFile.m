@@ -1,10 +1,37 @@
-function drawPitchLineFromeFile(filename)
+function drawPitchLineFromeFile(filename,whichPicture,id)
 %UNTITLED3 此处显示有关此函数的摘要
 %   此处显示详细说明
 
-[times_ms  pitch]=textread(filename,'%d\t%d');
+maxTime = 10.0;
 
-plot(times_ms,pitch,'*r');
+[times_ms  pitch]=textread(filename,'%f\t%f');
+
+%分割文件 s
+total = length(times_ms);
+duration = times_ms(length(times_ms));
+x = duration / total;
+count = ceil(duration/maxTime);
+
+
+
+for i=1:count
+    if(i==whichPicture)
+        startSample = floor((i-1)*maxTime/x)+1;
+        endSample = floor(i*maxTime)/x;
+        if startSample <= 0 
+            startSample = 1;
+        end
+        if endSample > length(times_ms)
+            endSample = length(times_ms);
+        end
+        tarr = times_ms(startSample:endSample);
+        parr = pitch(startSample:endSample);
+        str = [filename num2str(i)];
+%         figure('NumberTitle', 'off', 'Name', str);
+        subplot(2,1,id);
+        plot(tarr,parr,'*r');
+    end
+end
 
 end
 
