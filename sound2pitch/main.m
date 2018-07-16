@@ -3,9 +3,10 @@ function main()
 %   此处显示详细说明
 % filename='../test.wav';
 %  filename='../sourcefile/source1.wav';
-   filename = '../sourcefile/tmpf.wav';
+%    filename = '../sourcefile/tmpf.wav';
 %   filename = '../sourcefile/tmp1.wav';
 % filename = '../sourcefile/test1.wav';
+filename = '../sourcefile/voice.wav';
 
 minpitch=75;
 timeStep=0;

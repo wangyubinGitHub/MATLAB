@@ -6,7 +6,7 @@ function [pitch] = sound_to_pitch(arr,timeStep,minimumPitch,maximumPitch,ccc,ttt
 %minimumPitch：最小pitch
 %maximumPitch：最大pitch，不会超过 44100/2
 
-debuglog=0; %是否打log到文件
+debuglog=1; %是否打log到文件
 debugplot = 0;%是否画图
 
 %Step.1
@@ -234,8 +234,8 @@ for i=1:numberOfFrames
     localMean = localMean / (2 * nsamp_period);
 
     if debuglog ~= 0
-        str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample) 'localMean=' num2str(localMean)];
-        disp(str);
+%         str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample) 'localMean=' num2str(localMean)];
+%         disp(str);
     end
     %Step 3.2 减去平均值按照一个窗计算
     startSample = rightSample - halfnsamp_window;
@@ -256,8 +256,8 @@ for i=1:numberOfFrames
     end
 
     if debuglog ~= 0
-        str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample) 'localMean=' num2str(localMean)];
-        disp(str);
+%         str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample) 'localMean=' num2str(localMean)];
+%         disp(str);
     end
     
     %Step 3.4 乘以窗函数
@@ -278,8 +278,8 @@ for i=1:numberOfFrames
 	end
     
     if debuglog ~= 0
-        str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample)];
-        disp(str);
+%         str=['startSample=' num2str(startSample) 'endSample=' num2str(endSample)];
+%         disp(str);
     end
     
     if debuglog ~= 0
@@ -304,8 +304,8 @@ for i=1:numberOfFrames
     end
     
     if debuglog ~= 0
-        str=['localPeak=' num2str(localPeak) 'intensity=' num2str(intensity(i))];
-        disp(str);
+%         str=['localPeak=' num2str(localPeak) 'intensity=' num2str(intensity(i))];
+%         disp(str);
     %     disp('printf frames-mean');
     %     for xx=startSample:endSample
     %         str=['frame[' num2str(xx) ']=' num2str(frame(xx))];
@@ -385,8 +385,8 @@ for i=1:numberOfFrames
                 end
                 
                 if debuglog ~=0 
-                    str=['frequencyOfMaximum=' num2str(frequencyOfMaximum) 'strengthOfMaximum=' num2str(strengthOfMaximum) 'rx [' num2str(j) ']' num2str(rx(j)) ];
-                    disp(str);
+%                     str=['frequencyOfMaximum=' num2str(frequencyOfMaximum) 'strengthOfMaximum=' num2str(strengthOfMaximum) 'rx [' num2str(j) ']' num2str(rx(j)) ];
+%                     disp(str);
                 end
 
                 if (nCandidate(i) < maxnCandidates) %is there still a free place?
